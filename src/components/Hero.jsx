@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ArrowDownRight, Linkedin, Mail, MapPin, Phone } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { personalInfo } from '../data/portfolioData'
@@ -7,6 +7,7 @@ import bgImage from "../assets/construction-site-new-modern-architecture-night.j
 function Hero() {
   const sectionRef = useRef(null)
   const shouldReduceMotion = useReducedMotion()
+  const [enableZoom, setEnableZoom] = useState(true)
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
@@ -17,21 +18,43 @@ function Hero() {
   const frameOpacity = useTransform(scrollYProgress, [0, 0.45, 0.85], [0.95, 0.35, 0])
   const frameScale = useTransform(scrollYProgress, [0, 1], [1, 1.06])
   const frameY = useTransform(scrollYProgress, [0, 1], [0, 28])
+  const allowScrollZoom = enableZoom && !shouldReduceMotion
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 768px)')
+    const update = () => setEnableZoom(media.matches)
+
+    update()
+
+    if (media.addEventListener) {
+      media.addEventListener('change', update)
+    } else {
+      media.addListener(update)
+    }
+
+    return () => {
+      if (media.removeEventListener) {
+        media.removeEventListener('change', update)
+      } else {
+        media.removeListener(update)
+      }
+    }
+  }, [])
 
   return (
     <motion.section
       ref={sectionRef}
       id="home"
-      className="relative flex min-h-[calc(100svh-82px)] w-full items-center overflow-hidden px-4 py-6 sm:min-h-[calc(100svh-88px)] sm:px-6 sm:py-8 lg:px-8 lg:py-10"
-      style={{ scale: shouldReduceMotion ? 1 : heroScale }}
+      className="relative flex min-h-[calc(100svh-74px)] w-full items-center overflow-hidden px-4 py-6 sm:min-h-[calc(100svh-88px)] sm:px-6 sm:py-8 lg:px-8 lg:py-10"
+      style={{ scale: allowScrollZoom ? heroScale : 1 }}
     >
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -z-0 border-y border-industrial-line/60"
         style={{
-          opacity: shouldReduceMotion ? 0 : frameOpacity,
-          scale: shouldReduceMotion ? 1 : frameScale,
-          y: shouldReduceMotion ? 0 : frameY,
+          opacity: allowScrollZoom ? frameOpacity : 0.85,
+          scale: allowScrollZoom ? frameScale : 1,
+          y: allowScrollZoom ? frameY : 0,
           backgroundImage: `
             radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.22), transparent 42%),
             radial-gradient(circle at 82% 86%, rgba(249, 115, 22, 0.14), transparent 40%),
@@ -45,12 +68,12 @@ function Hero() {
         }}
       />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-6xl origin-top gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl origin-top gap-8 lg:gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div className="min-w-0">
           <p className="mb-3 font-display text-sm uppercase tracking-[0.3em] text-industrial-accentOrange">
             Portfolio
           </p>
-          <h1 className="mb-4 break-words font-display text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
+          <h1 className="mb-4 break-words font-display text-3xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
             {personalInfo.name}
           </h1>
           <p className="max-w-2xl break-words text-base text-industrial-textMuted sm:text-lg">{personalInfo.role}</p>
@@ -80,7 +103,7 @@ function Hero() {
 
         <motion.div
           className="panel min-w-0 animate-floatSlow"
-          style={{ scale: shouldReduceMotion ? 1 : snapshotScale }}
+          style={{ scale: allowScrollZoom ? snapshotScale : 1 }}
         >
           <div className="mb-4 flex items-center justify-between border-b border-industrial-line pb-4">
             <p className="font-display text-xl font-semibold text-white">System Snapshot</p>
