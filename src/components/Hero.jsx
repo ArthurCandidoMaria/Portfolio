@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { ArrowDownRight, Linkedin, Mail, MapPin, Phone } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { personalInfo } from '../data/portfolioData'
-import bgImage from "@/assets/construction-site-new-modern-architecture-night.jpg"
+import bgImage from "../assets/construction-site-new-modern-architecture-night.jpg"
 
 function Hero() {
   const sectionRef = useRef(null)
@@ -32,8 +32,12 @@ function Hero() {
           opacity: shouldReduceMotion ? 0 : frameOpacity,
           scale: shouldReduceMotion ? 1 : frameScale,
           y: shouldReduceMotion ? 0 : frameY,
-          backgroundImage:
-            "radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.22), transparent 42%), radial-gradient(circle at 82% 86%, rgba(249, 115, 22, 0.14), transparent 40%), linear-gradient(180deg, rgba(31, 41, 51, 0.82) 0%, rgba(17, 24, 39, 0.9) 48%, rgba(10, 12, 15, 0.97) 100%), url(${bgImage})",
+          backgroundImage: `
+            radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.22), transparent 42%),
+            radial-gradient(circle at 82% 86%, rgba(249, 115, 22, 0.14), transparent 40%),
+            linear-gradient(180deg, rgba(31, 41, 51, 0.82) 0%, rgba(17, 24, 39, 0.9) 48%, rgba(10, 12, 15, 0.97) 100%),
+            url(${bgImage})
+            `,
           backgroundSize: 'cover, cover, cover, cover',
           backgroundPosition: 'center, center, center, center',
           backgroundRepeat: 'no-repeat',
